@@ -8,14 +8,16 @@ function initExtension() {
 
     const PAGES = Object.freeze({
         "subscriptions": "/feed/subscriptions",
-        "video": "/watch"
+        "video": "/watch",
+        "home": ""
     });
 
     function handlePageChange(page) {
+        log("Changing page from ", page)
         //remove trailing /
         page = page.replace(/\/$/, "");
 
-        log("Page was changed to " + page);
+        log("Page was changed to '" + page + "'");
 
         //unload old page
         stopSubs();
@@ -24,6 +26,7 @@ function initExtension() {
             //handle new page
             switch (page) {
                 case PAGES.subscriptions:
+                case PAGES.home:
                     initSubs();
                     break;
                 case PAGES.video:

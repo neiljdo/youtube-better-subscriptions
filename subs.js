@@ -4,14 +4,16 @@ let hideWatched = null;
 let intervalId = null;
 
 function isYouTubeWatched(item) {
+    log("neiljdo" + " isPolymer " + isPolymer)
     return (
             (!isPolymer &&
                     (item.getElementsByClassName("watched").length > 0 ||
                             item.getElementsByClassName("contains-percent-duration-watched").length > 0)) || //has "WATCHED" on thumbnail
             (isPolymer &&
                     (item.querySelectorAll("yt-formatted-string.style-scope.ytd-thumbnail-overlay-playback-status-renderer").length > 0 || //has "WATCHED" on thumbnail
-                            item.querySelectorAll("#progress.style-scope.ytd-thumbnail-overlay-resume-playback-renderer").length > 0) || //has progress bar on thumbnail
-                    item.hasAttribute("is-dismissed")) //also hide empty blocks left in by pressing "HIDE" button
+                            (item.querySelectorAll("#progress.style-scope.ytd-thumbnail-overlay-resume-playback-renderer").length > 0 && //has progress bar on thumbnail
+                             item.querySelectorAll("#progress.style-scope.ytd-thumbnail-overlay-resume-playback-renderer")[0].getAttribute("style").includes("width: 100%;")) || //and progress bar is 100% 
+                    item.hasAttribute("is-dismissed"))) //also hide empty blocks left in by pressing "HIDE" button
     )
 }
 
@@ -94,10 +96,13 @@ function loadMoreVideos() {
 }
 
 function getVideoIdFromUrl(url) {
+    log("url: " + url)
     return url.split("=")[1].split("&")[0];
 }
 
 function getVideoId(item) {
+    log("item:")
+    log(item)
     return getVideoIdFromUrl(item.querySelectorAll("a")[0].getAttribute("href"));
 }
 

@@ -16,6 +16,15 @@ function hideItem(item) {
     hidden.push(item);
     item.style.display = 'none';
     item.classList.add(HIDDEN_CLASS);
+
+    // In home page, need to hide parent polymer element, as well
+    // TODO: Undo this when toggling "Hide Watched"
+    let additionalParent = item.parentNode.parentNode
+    if (additionalParent.tagName.toLowerCase() == "ytd-rich-item-renderer" && 
+        additionalParent.classList.value.includes("style-scope") &&
+        additionalParent.classList.value.includes("ytd-rich-grid-renderer")) { 
+        additionalParent.style.display = 'none';
+    }
 }
 
 function changeMarkWatchedToMarkUnwatched(item) {
@@ -37,6 +46,14 @@ function showWatched() {
         changeMarkWatchedToMarkUnwatched(item);
         item.style.display = '';
         item.classList.remove(HIDDEN_CLASS);
+
+        // In home page, need to hide parent polymer element, as well
+        let additionalParent = item.parentNode.parentNode
+        if (additionalParent.tagName.toLowerCase() == "ytd-rich-item-renderer" && 
+            additionalParent.classList.value.includes("style-scope") &&
+            additionalParent.classList.value.includes("ytd-rich-grid-renderer")) { 
+            additionalParent.style.display = '';
+        }
     }
     hidden = [];
 
@@ -234,12 +251,14 @@ function removeWatchedAndAddButton() {
     log("Removing watched from feed and adding overlay");
 
     let els = document.querySelectorAll(vidQuery());
-
+    log("els.length: " + els.length)
     let hiddenCount = 0;
 
     for (let item of els) {
         let stored = getVideoId(item) in storage;
         let ytWatched = isYouTubeWatched(item);
+
+        log("video " + getVideoId(item) + " " + stored + " " + ytWatched)
 
         if (stored || ytWatched) {
             hideItem(item);
